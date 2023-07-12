@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>UPI Qr</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/downloadjs@1.4.7/download.min.js"></script>
+
+</head>
+
+<body class="bg-orange-400 text-white font-mono">
+  <div class="flex py-2 items-center justify-center bg-slate-200">
+    <span class="text-black font-semibold text-xl">UPI QR Code Generator</span>
+  </div>
+  <div class="mt-9 flex justify-center">
+    <img src="https://api.qrserver.com/v1/create-qr-code/?data=HelloWorld&format=svg"
+      class="w-1/2 m-1 p-2 bg-white rounded shadow-xl" id='qrCode'>
+  </div>
+  <div class="flex justify-center gap-3 items-center my-2">
+    <button class="p-1 px-2 text-sm text-white font-bold bg-green-600" onclick="getQr()">Create QR Code</button>
+    <button class="p-1 px-2 text-sm text-white font-bold bg-indigo-600" onclick="downloadQr()">Download QR Code</button>
+  </div>
+  <div class="mt-5 p-2 bg-slate-100 flex items-center flex-wrap gap-3 lg:justify-center">
+    <div class="flex flex-col gap-1 flex-grow">
+      <label for="paInput" class="text-black text-sm font-bold">Payee Address</label>
+      <span class="text-xs text-slate-500">Payee / Business virtual payment address (VPA)</span>
+      <input class="bg-transparent outline-slate-500 border border-slate-400 py-1 px-2 text-black"
+        placeholder="12345678elon@marspay.in" id='paInput'>
+    </div>
+    <div class="flex flex-col gap-1 flex-grow">
+      <label for="pnInput" class="text-black text-sm font-bold">Payee Name</label>
+      <span class="text-xs text-slate-500">Payee name or business name</span>
+      <input class="bg-transparent outline-slate-500 border border-slate-400 py-1 px-2 text-black"
+        placeholder="Tesla India" id='pnInput'>
+    </div>
+    <div class="flex flex-col gap-1 flex-grow">
+      <label for="pnInput" class="text-black text-sm font-bold">Business retailer category code</label>
+      <span class="text-xs text-slate-500">MCC code. Find codes <a
+          href="https://www.npci.org.in/what-we-do/rupay/merchant-category-code"
+          class='font-bold text-blue-400'>here</a></span>
+      <input class="bg-transparent outline-slate-500 border border-slate-400 py-1 px-2 text-black" placeholder="4816"
+        id='mcInput'>
+    </div>
+    <div class="flex flex-col gap-1 flex-grow">
+      <label for="urlInput" class="text-black text-sm font-bold">Reference URL</label>
+      <span class="text-xs text-slate-500">Transaction reference URL</span>
+      <input class="bg-transparent outline-slate-500 border border-slate-400 py-1 px-2 text-black"
+        placeholder="https://tesla.in/store" id='urlInput'>
+    </div>
+    <div class="flex flex-col gap-1 flex-grow">
+      <label for="tnInput" class="text-black text-sm font-bold">Description</label>
+      <span class="text-xs text-slate-500">Transaction Note (Appears on GPay)</span>
+      <input class="bg-transparent outline-slate-500 border border-slate-400 py-1 px-2 text-black"
+        placeholder="New tesla" id='tnInput' maxlength="80">
+    </div>
+    <div class="flex flex-col gap-1 flex-grow">
+      <label for="amInput" class="text-black text-sm font-bold">Transaction Amount</label>
+      <span class="text-xs text-slate-500">Amount to pay</span>
+      <input class="bg-transparent outline-slate-500 border border-slate-400 py-1 px-2 text-black" placeholder="2000"
+        id='amInput' type="number">
+    </div>
+  </div>
+  <div class=" bg-slate-800 text-slate-100 flex flex-col justify-center items-center py-5 pt-9 gap-2">
+    <span class="text-sm">Built by <a href='https://bento.me/sachinsankar'
+        class="text-sm  text-transparent bg-gradient-to-r from-purple-500 via-sky-200 to-yellow-500 bg-clip-text">Sachin
+        Sankar</a> for all</span>
+    <span class="text-sm italic">Writing code that matters.</span>
+    <a href="https://github.com/sachin-sankar/upiqr"><img src="https://img.shields.io/github/stars/sachin-sankar/upiqr?logo=github
+"></a>
+  </div>
+  <script>
+    function getQr() {
+      let pa = document.getElementById('paInput').value
+      let pn = document.getElementById('pnInput').value
+      let mc = document.getElementById('mcInput').value
+      let url = document.getElementById('urlInput').value
+      let tn = document.getElementById('tnInput').value
+      let am = document.getElementById('amInput').value
+
+      let data = [['pa', pa], ['pn', pn], ['mc', mc], ['url', url], ['tn', tn], ['am', am]]
+      let query = 'upi://pay?'
+      for (param of data) {
+        if (param[1] != '' & param[1] != null) {
+          query += `${param[0]}=${param[1]}&`
+        }
+      }
+
+      document.getElementById('qrCode').src = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(query)}&format=svg`
+      console.log(`https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(query)}&format=svg`)
+
+    }
+
+    function downloadQr() {
+      let url = document.getElementById('qrCode').src
+      let source = url.slice(0, -11)
+      let formats = ['png', 'svg']
+      let name = document.getElementById('paInput').value
+      for (format of formats) {
+        download(source + `&format=${format}`)
+
+      }
+    }
+  </script>
+</body>
+
+</html>
